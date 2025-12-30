@@ -23,6 +23,7 @@ const Sidebar = () => {
             title: 'Configure',
             items: [
                 { icon: LayoutDashboard, label: 'Dashboard', path: '/rag' },
+                { icon: Database, label: 'Projects', path: '/rag/projects' },
                 { icon: Database, label: 'Data Sources', path: '/rag/sources' },
                 { icon: UploadCloud, label: 'Ingestion Pipeline', path: '/rag/ingestion' },
                 { icon: Bot, label: 'Model Configuration', path: '/rag/models' },

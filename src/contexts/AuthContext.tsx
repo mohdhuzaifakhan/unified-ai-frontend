@@ -25,7 +25,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is already logged in
         const token = localStorage.getItem('accessToken');
         const userData = localStorage.getItem('user');
 
@@ -45,15 +44,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const login = async (email: string, password: string) => {
         try {
             const response: AuthResponse = await authApi.login({ email, password });
-
-            // Store tokens
             localStorage.setItem('accessToken', response.accessToken);
             localStorage.setItem('refreshToken', response.refreshToken);
             localStorage.setItem('user', JSON.stringify(response.user));
 
             setUser(response.user);
         } catch (error: any) {
-            console.error('Login failed:', error);
             throw new Error(error.response?.data?.error || 'Login failed');
         }
     };
@@ -61,15 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signup = async (email: string, password: string, firstName: string, lastName: string) => {
         try {
             const response: AuthResponse = await authApi.signup({ email, password, firstName, lastName });
-
-            // Store tokens
             localStorage.setItem('accessToken', response.accessToken);
             localStorage.setItem('refreshToken', response.refreshToken);
             localStorage.setItem('user', JSON.stringify(response.user));
-
             setUser(response.user);
         } catch (error: any) {
-            console.error('Signup failed:', error);
             throw new Error(error.response?.data?.error || 'Signup failed');
         }
     };

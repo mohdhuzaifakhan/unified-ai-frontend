@@ -42,19 +42,36 @@ export const dataSourcesApi = {
         const response = await coreApi.post('/data-sources', data);
         return response.data;
     },
-
-    uploadFile: async (file: File, projectId: string): Promise<DataSource> => {
+    uploadFile: async (
+        file: File,
+        projectId: string
+    ): Promise<DataSource> => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('projectId', projectId);
+        const token = localStorage.getItem('accessToken');
 
-        const response = await coreApi.post('/data-sources/upload', formData, {
+        if (!token) {
+            throw new Error('No access token found');
+        }
+
+        const CORE_API_URL = import.meta.env.VITE_CORE_API_URL || 'http://localhost:3001/api';
+        const response = await fetch(`${CORE_API_URL}/data-sources/upload`, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
             },
+            body: formData,
         });
-        return response.data;
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Upload failed: ${errorText}`);
+        }
+
+        return response.json();
     },
+
 
     update: async (id: string, data: Partial<CreateDataSourceData>): Promise<DataSource> => {
         const response = await coreApi.patch(`/data-sources/${id}`, data);
@@ -63,5 +80,10 @@ export const dataSourcesApi = {
 
     delete: async (id: string): Promise<void> => {
         await coreApi.delete(`/data-sources/${id}`);
+    },
+
+    getPreview: async (id: string): Promise<any[]> => {
+        const response = await coreApi.get(`/data-sources/${id}/preview`);
+        return response.data;
     },
 };

@@ -1,45 +1,84 @@
-import { FileText, Database, Zap, DollarSign, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { FileText, Database, Zap, DollarSign, Plus, Loader2 } from 'lucide-react';
+import { dashboardApi } from '@/services/api';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+    const [stats, setStats] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
+    const fetchStats = async () => {
+        try {
+            setLoading(true);
+            const data = await dashboardApi.getRagStats();
+            setStats(data);
+        } catch (err) {
+            console.error('Error fetching RAG stats:', err);
+            setError('Failed to load dashboard statistics');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <Loader2 className="w-10 h-10 text-brand-500 animate-spin mb-4" />
+                <p className="text-slate-400 animate-pulse">Loading RAG performance data...</p>
+            </div>
+        );
+    }
+
+    // Default stats if API fails or returns no data
+    const displayStats = stats.length > 0 ? stats : [
+        { label: 'Total Documents', value: '0', trend: '+0%', color: 'text-emerald-400' },
+        { label: 'Vector Store Size', value: '0 B', trend: 'Optimized', color: 'text-blue-400' },
+        { label: 'API Calls (Mo)', value: '0', trend: '+0%', color: 'text-purple-400' },
+        { label: 'LLM Cost', value: '$0.00', trend: 'Est.', color: 'text-orange-400' },
+    ];
+
+    const iconMap = {
+        'Total Documents': FileText,
+        'Vector Store Size': Database,
+        'API Calls (Mo)': Zap,
+        'LLM Cost': DollarSign,
+    };
+
+    const colorMap = {
+        'emerald': 'bg-emerald-500/10',
+        'blue': 'bg-blue-500/10',
+        'purple': 'bg-purple-500/10',
+        'orange': 'bg-orange-500/10',
+    };
+
     return (
         <div className="animate-fade-in">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard
-                    title="Total Documents"
-                    value="1,284"
-                    change="+12%"
-                    changeColor="text-emerald-400"
-                    icon={FileText}
-                    iconColor="text-emerald-400"
-                    bg="bg-emerald-500/10"
-                />
-                <StatCard
-                    title="Vector Store Size"
-                    value="4.2 GB"
-                    change="Optimized"
-                    changeColor="text-slate-500"
-                    icon={Database}
-                    iconColor="text-blue-400"
-                    bg="bg-blue-500/10"
-                />
-                <StatCard
-                    title="API Calls (Mo)"
-                    value="84.5k"
-                    change="+5%"
-                    changeColor="text-purple-400"
-                    icon={Zap}
-                    iconColor="text-purple-400"
-                    bg="bg-purple-500/10"
-                />
-                <StatCard
-                    title="LLM Cost"
-                    value="$42.30"
-                    change="Est."
-                    changeColor="text-slate-500"
-                    icon={DollarSign}
-                    iconColor="text-orange-400"
-                    bg="bg-orange-500/10"
-                />
+                {displayStats.map((stat, idx) => {
+                    const Icon = iconMap[stat.label] || Zap;
+                    const colorParts = stat.color.split('-');
+                    const colorName = colorParts[1];
+                    const bgColor = colorMap[colorName] || 'bg-brand-500/10';
+
+                    return (
+                        <StatCard
+                            key={idx}
+                            title={stat.label}
+                            value={stat.value}
+                            change={stat.trend}
+                            changeColor={stat.color}
+                            icon={Icon}
+                            iconColor={stat.color}
+                            bg={bgColor}
+                        />
+                    );
+                })}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -92,7 +131,7 @@ const Dashboard = () => {
                         </div>
 
                         <div className="pt-4 border-t border-slate-800">
-                            <button className="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2">
+                            <button className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2" onClick={()=> navigate('/rag/sources')}>
                                 <Plus className="w-4 h-4" />
                                 New Data Source
                             </button>

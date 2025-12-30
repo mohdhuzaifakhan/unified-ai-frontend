@@ -4,6 +4,7 @@ export interface Project {
     _id: string;
     name: string;
     description?: string;
+    type: string;
     userId: string;
     status: string;
     settings: Record<string, any>;
@@ -16,6 +17,7 @@ export interface Project {
 export interface CreateProjectData {
     name: string;
     description?: string;
+    type?: string;
     settings?: Record<string, any>;
 }
 
@@ -27,8 +29,8 @@ export interface UpdateProjectData {
 }
 
 export const projectsApi = {
-    getAll: async (): Promise<Project[]> => {
-        const response = await coreApi.get('/projects');
+    getAll: async (type?: string): Promise<Project[]> => {
+        const response = await coreApi.get('/projects', { params: { type } });
         return response.data;
     },
 

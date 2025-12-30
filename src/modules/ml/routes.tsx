@@ -16,12 +16,6 @@ import Maintenance from "./pages/Maintenance"
 import BusinessImpact from "./pages/BusinessImpact"
 import ModelBuilder from "./pages/ModelBuilder"
 
-// Auth pages might need to be handled differently or shared, 
-// for now keeping them local to the module if they are specific.
-import Login from "./pages/Login"
-import Signup from "./pages/Signup"
-import AuthLayout from "./layouts/AuthLayout"
-
 export const MLRoutes = () => {
     return (
         <Routes>
@@ -42,14 +36,6 @@ export const MLRoutes = () => {
                 <Route path="billing" element={<Billing />} />
                 <Route path="settings" element={<Settings />} />
             </Route>
-
-            {/* Auth routes within the module? Probably redundant if Shell handles auth, 
-          but keeping for completeness of migration */}
-            <Route path="login" element={<AuthLayout><Login /></AuthLayout>} />
-            <Route path="signup" element={<AuthLayout><Signup /></AuthLayout>} />
-
-            {/* Redirect root of /services/ml to dashboard part if that's the intent */}
-            {/* Actually the first route path="/" covers /services/ml/ */}
         </Routes>
     )
 }

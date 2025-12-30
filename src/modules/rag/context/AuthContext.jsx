@@ -13,9 +13,6 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuth = async () => {
         try {
-            // We need to implement this endpoint in backend or infer from existing
-            // For now, we'll try to access a protected route to check cookie validity
-            // Or better, add /api/auth/me to flask
             const res = await axios.get('/api/auth/me');
             if (res.data.user) {
                 setUser(res.data.user);
@@ -30,7 +27,6 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         const res = await axios.post('/api/auth/login', { email, password });
         if (res.data.status === 'success') {
-            // Fetch user details or set basic info
             setUser({ email });
             return true;
         }

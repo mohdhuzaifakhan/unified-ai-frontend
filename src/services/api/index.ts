@@ -6,3 +6,6 @@ export * from './dataSources';
 export * from './models';
 export * from './training';
 export * from './ml';
+export * from './dashboard';
+export * from './dataIngestionApi';
+
