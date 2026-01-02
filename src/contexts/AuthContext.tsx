@@ -9,6 +9,7 @@ interface User {
     role: string;
 }
 
+
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
@@ -75,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
+            
             setUser(null);
         }
     };

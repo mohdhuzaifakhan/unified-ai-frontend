@@ -26,6 +26,13 @@ export const dataIngestionApi = {
         return res.data;
     },
 
+    getEmbeddingRuns: async (
+        projectId: string,
+    ) => {
+        const res = await client.get('/data-ingestion/embedding/runs', { params: { projectId } });
+        return res.data;
+    },
+
     runPipeline: async (
         configId: string,
         datasourceId: string
@@ -34,6 +41,13 @@ export const dataIngestionApi = {
             configId,
             datasourceId,
         });
+        return res.data;
+    },
+
+    getAllEmbeddingsWithMetadataOfProject: async (
+        projectId: string,
+    ) => {
+        const res = await client.get('/data-ingestion/embeddings/configs/datasource/metadata', { params: { projectId } });
         return res.data;
     },
 

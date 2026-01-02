@@ -1,62 +1,71 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, Bot, Database, Zap } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+    Zap,
+    Shield,
+    ArrowRight,
+    Database,
+    Workflow,
+} from "lucide-react";
 
 const Landing = () => {
+    const navigate = useNavigate();
+
     return (
-        <div className="min-h-screen bg-dark-950 text-slate-200">
-            {/* Navbar */}
-            <nav className="border-b border-slate-800/50 backdrop-blur-sm fixed w-full z-50 bg-dark-950/80">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2 font-bold text-xl text-white">
-                        <Zap className="text-brand-400 fill-brand-400/20" />
-                        RAG Service
-                    </div>
-                    <div className="flex gap-4">
-                        <Link to="/login" className="px-5 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                            Sign In
-                        </Link>
-                        <Link to="/signup" className="px-5 py-2 text-sm font-medium bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-all shadow-lg shadow-brand-500/20">
-                            Get Started
-                        </Link>
-                    </div>
+        <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-6">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="max-w-3xl space-y-6"
+            >
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-500 text-[10px] font-bold uppercase tracking-widest">
+                    <Zap size={14} fill="currentColor" />
+                    Next-Generation Retrieval
                 </div>
-            </nav>
 
-            {/* Hero */}
-            <div className="relative pt-32 pb-20 px-6 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-brand-500/20 rounded-full blur-[120px] -z-10 opacity-50" />
+                <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight">
+                    Enterprise Knowledge <br />
+                    <span className="text-blue-500">Retrieval Augmented Generation</span>
+                </h1>
 
-                <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-8">
-                        Build Intelligent <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-500">Agent Workflows</span>
-                    </h1>
-                    <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Orchestrate multi-agent systems, ingest custom data, and deploy powerful RAG pipelines in minutes.
-                    </p>
-                    <div className="flex justify-center gap-4">
-                        <Link to="/signup" className="flex items-center gap-2 px-8 py-3 bg-white text-slate-950 rounded-lg font-semibold hover:bg-slate-200 transition-colors">
-                            Start Building <ArrowRight className="w-5 h-5" />
-                        </Link>
-                    </div>
+                <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+                    Scale your intelligence with a unified RAG platform. Connect data sources,
+                    manage vector indices, and deploy secure LLM interfaces in minutes.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <button
+                        onClick={() => navigate("/rag/projects")}
+                        className="w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold text-sm transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                    >
+                        Manage Projects
+                        <ArrowRight size={18} />
+                    </button>
+                    <button
+                        onClick={() => window.location.href = '#'}
+                        className="w-full sm:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-sm border border-slate-700 transition-all"
+                    >
+                        API Docs
+                    </button>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Feature Grid */}
-            <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-3 gap-8">
-                <FeatureCard
-                    icon={Bot}
-                    title="Multi-Agent Systems"
-                    desc="Deploy specialized agents that work together to solve complex tasks."
-                />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-5xl w-full">
                 <FeatureCard
                     icon={Database}
-                    title="RAG Pipeline"
-                    desc="Ingest documents, manage embeddings, and chat with your data instantly."
+                    title="Vector Persistence"
+                    desc="Optimized storage for high-dimensional semantic search."
                 />
                 <FeatureCard
                     icon={Workflow}
-                    title="Visual Builder"
-                    desc="Design workflows with a drag-and-drop interface. No coding required."
+                    title="Neural Pipelines"
+                    desc="Automated chunking and embedding orchestration."
+                />
+                <FeatureCard
+                    icon={Shield}
+                    title="Access Controls"
+                    desc="Granular API security and domain whitelisting."
                 />
             </div>
         </div>
@@ -64,16 +73,13 @@ const Landing = () => {
 };
 
 const FeatureCard = ({ icon: Icon, title, desc }) => (
-    <div className="p-8 bg-slate-900/50 border border-slate-800 rounded-2xl hover:bg-slate-900 transition-colors">
-        <div className="w-12 h-12 bg-brand-500/10 rounded-lg flex items-center justify-center mb-6">
-            <Icon className="w-6 h-6 text-brand-400" />
+    <div className="p-6 bg-slate-900/50 border border-slate-700/50 rounded-xl text-left space-y-4 hover:border-slate-600 transition-all group">
+        <div className="p-2.5 bg-slate-800 rounded-lg text-blue-500 w-fit group-hover:bg-blue-600 group-hover:text-white transition-all">
+            <Icon size={20} />
         </div>
-        <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-        <p className="text-slate-400 leading-relaxed">{desc}</p>
+        <h3 className="font-bold text-white text-sm">{title}</h3>
+        <p className="text-xs text-slate-500 leading-relaxed font-medium">{desc}</p>
     </div>
 );
-
-// lucide-react doesn't export Workflow? reusing Zap for placeholder if needed.
-import { Workflow } from 'lucide-react';
 
 export default Landing;

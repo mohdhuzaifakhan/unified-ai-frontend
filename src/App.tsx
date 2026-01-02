@@ -18,7 +18,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           {/* <Route path="/ml/*" element={<MLRoutes />} /> */}
           <Route path="/rag/*" element={<RAGRoutes />} />
-          {/* <Route path="/agents/*" element={<AgentsRoutes />} /> */}
+          <Route path="/agents/*" element={<AgentsRoutes />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

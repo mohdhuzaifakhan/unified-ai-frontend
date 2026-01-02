@@ -21,7 +21,7 @@ import { useProject } from "../context/ProjectContext";
 
 export default function RAGProjectsPage() {
   const { user } = useAuth();
-  const { projects, createProject, updateProject, loading, creating, error } =
+  const { projects, createProject, updateProject, loading, creating, error, selectedProject, selectProject } =
     useProject();
   const [editingProject, setEditingProject] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -144,13 +144,22 @@ export default function RAGProjectsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              onClick={() => selectProject(project._id)}
+              className="cursor-pointer"
             >
-              <Card className="group bg-slate-900/50 border-slate-800 hover:bg-slate-900/80 transition-all duration-300 overflow-hidden relative">
+              <Card className={`group transition-all duration-300 overflow-hidden relative ${selectedProject?._id === project._id
+                ? "bg-slate-800/80 border-blue-500 shadow-lg shadow-blue-500/20"
+                : "bg-slate-900/50 border-slate-800 hover:bg-slate-900/80 hover:border-slate-700"
+                }`}>
                 <CardContent className="py-4 px-3">
                   <div className="flex items-start gap-3 mb-3">
-                    <Database className="w-7 h-7 text-brand-400 shrink-0" />
+                    <Database className={`w-7 h-7 shrink-0 ${selectedProject?._id === project._id ? "text-blue-400" : "text-brand-400"
+                      }`} />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white text-sm truncate group-hover:text-brand-400 transition-colors">
+                      <h3 className={`font-semibold text-sm truncate transition-colors ${selectedProject?._id === project._id
+                        ? "text-blue-400"
+                        : "text-white group-hover:text-brand-400"
+                        }`}>
                         {project.name}
                       </h3>
 
@@ -162,12 +171,15 @@ export default function RAGProjectsPage() {
                       </div>
                     </div>
 
-                    <div className="flex gap-1">
+                    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                       <Button
                         size="icon"
                         variant="ghost"
                         className="h-7 w-7 hover:bg-slate-800 text-slate-400 hover:text-blue-400"
-                        onClick={() => handleEditProject(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditProject(project);
+                        }}
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </Button>
@@ -176,7 +188,10 @@ export default function RAGProjectsPage() {
                         size="icon"
                         variant="ghost"
                         className="h-7 w-7 hover:bg-slate-800 text-slate-400 hover:text-red-400"
-                        onClick={() => handleDeleteProject(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteProject(project);
+                        }}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -192,27 +207,22 @@ export default function RAGProjectsPage() {
                   <div className="flex items-center justify-between pt-3 border-t border-white/5">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`w-2 h-2 rounded-full ${
-                          project.status === "active"
-                            ? "bg-emerald-500"
-                            : "bg-slate-600"
-                        }`}
+                        className={`w-2 h-2 rounded-full ${project.status === "active"
+                          ? "bg-emerald-500"
+                          : "bg-slate-600"
+                          }`}
                       />
                       <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">
                         {project.status}
                       </span>
                     </div>
 
-                    <Button
-                      variant="ghost"
-                      className="h-7 px-2 text-xs gap-1 hover:bg-slate-800 text-slate-300 hover:text-white"
-                      onClick={() =>
-                        navigate(`/rag/sources?projectId=${project._id}`)
-                      }
-                    >
-                      Open
-                      <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
-                    </Button>
+                    {selectedProject?._id === project._id && (
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-400">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                        Selected
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

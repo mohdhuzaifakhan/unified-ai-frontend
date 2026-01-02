@@ -1,6 +1,31 @@
+import React, { useState, useEffect } from "react";
 import { Activity, RefreshCw, Cpu, CheckCircle, AlertTriangle, User, Bot, MessageSquare, FileSearch } from 'lucide-react';
+import { useProject } from "../../rag/context/ProjectContext";
+import { monitoringApi } from "@/services/api/monitoringApi";
 
 const AgentMonitoring = () => {
+    const { currentProject } = useProject();
+    const [traces, setTraces] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (currentProject?._id) {
+            loadTraces();
+        }
+    }, [currentProject?._id]);
+
+    const loadTraces = async () => {
+        try {
+            setLoading(true);
+            const data = await monitoringApi.getTraces(currentProject._id);
+            setTraces(data);
+        } catch (err) {
+            console.error("Failed to load agent activity:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-6 animate-fade-in">
             {/* Header Controls */}
@@ -14,8 +39,12 @@ const AgentMonitoring = () => {
                         <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                         Live System
                     </span>
-                    <button className="p-2 text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 transition-colors">
-                        <RefreshCw className="w-4 h-4" />
+                    <button
+                        onClick={loadTraces}
+                        disabled={loading}
+                        className="p-2 text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-lg border border-slate-700 transition-colors disabled:opacity-50"
+                    >
+                        <RefreshCw className={loading ? "w-4 h-4 animate-spin" : "w-4 h-4"} />
                     </button>
                 </div>
             </div>
@@ -23,36 +52,36 @@ const AgentMonitoring = () => {
             {/* Status Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatusCard
-                    title="Active Agents"
-                    value="12"
+                    title="Total Interactions"
+                    value={traces.length.toString()}
                     icon={Cpu}
                     iconColor="text-brand-400"
                     iconBg="bg-brand-500/10"
-                    progress={75}
+                    progress={100}
                     progressColor="bg-brand-500"
-                    footer="2 new instances spawned"
-                    footerIcon={Activity} // Arrow up substitute
+                    footer="Latest session activity"
+                    footerIcon={Activity}
                 />
                 <StatusCard
                     title="Task Success Rate"
-                    value="98.5%"
+                    value={`${traces.length > 0 ? ((traces.filter(t => t.status === 'grounded').length / traces.length) * 100).toFixed(1) : 0}%`}
                     icon={CheckCircle}
                     iconColor="text-emerald-400"
                     iconBg="bg-emerald-500/10"
-                    progress={98}
+                    progress={traces.length > 0 ? (traces.filter(t => t.status === 'grounded').length / traces.length) * 100 : 0}
                     progressColor="bg-emerald-500"
-                    footer="1,405 tasks completed today"
+                    footer="Grounded vs Hallucination"
                     footerIcon={CheckCircle}
                 />
                 <StatusCard
-                    title="Critical Alerts"
-                    value="0"
+                    title="Avg Latency"
+                    value={traces.length > 0 ? `${(traces.reduce((acc, t) => acc + t.latency, 0) / traces.length).toFixed(0)}ms` : "0ms"}
                     icon={AlertTriangle}
                     iconColor="text-slate-400"
                     iconBg="bg-slate-700/50"
                     progress={0}
                     progressColor="bg-slate-700"
-                    footer="System operating normally"
+                    footer="Processing speed"
                     footerIcon={CheckCircle}
                 />
             </div>
@@ -61,31 +90,37 @@ const AgentMonitoring = () => {
                 {/* Live Agent List */}
                 <div className="lg:col-span-2 p-5 bg-slate-900/50 border border-slate-700/50 rounded-xl flex flex-col h-[500px]">
                     <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
-                        <h3 className="font-semibold text-white">Live Agents</h3>
-                        <div className="flex gap-2">
-                            <select className="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2 py-1 text-slate-300 focus:outline-none focus:border-brand-500">
-                                <option>All Types</option>
-                                <option>Research</option>
-                                <option>Support</option>
-                                <option>Analysis</option>
-                            </select>
-                        </div>
+                        <h3 className="font-semibold text-white">Live Activity</h3>
                     </div>
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="text-xs text-slate-500 border-b border-slate-700/50">
-                                    <th className="px-4 py-3 font-medium uppercase tracking-wider">Agent ID</th>
-                                    <th className="px-4 py-3 font-medium uppercase tracking-wider">Type</th>
+                                    <th className="px-4 py-3 font-medium uppercase tracking-wider">Trace ID</th>
+                                    <th className="px-4 py-3 font-medium uppercase tracking-wider">Query</th>
                                     <th className="px-4 py-3 font-medium uppercase tracking-wider">Status</th>
-                                    <th className="px-4 py-3 font-medium uppercase tracking-wider">Current Task</th>
                                     <th className="px-4 py-3 font-medium uppercase tracking-wider text-right">Latency</th>
                                 </tr>
                             </thead>
                             <tbody className="text-sm text-slate-300">
-                                <AgentRow id="AGT-8821" type="Research Assistant" status="Processing" task="Summarizing 'Q3 Financial Report.pdf'" latency="124ms" icon={Bot} iconColor="text-brand-400" iconBg="bg-brand-500/10" />
-                                <AgentRow id="AGT-9004" type="Customer Support" status="Idle" task="Waiting for user input" latency="-" icon={MessageSquare} iconColor="text-purple-400" iconBg="bg-purple-500/10" />
-                                <AgentRow id="AGT-7712" type="Data Analyst" status="Processing" task="Generating SQL query for sales..." latency="842ms" icon={FileSearch} iconColor="text-orange-400" iconBg="bg-orange-500/10" />
+                                {traces.map(trace => (
+                                    <AgentRow
+                                        key={trace._id}
+                                        id={trace._id.substring(0, 8)}
+                                        type="RAG Agent"
+                                        status={trace.status === 'grounded' ? 'Processing' : 'Warning'}
+                                        task={trace.query}
+                                        latency={`${trace.latency}ms`}
+                                        icon={Bot}
+                                        iconColor="text-brand-400"
+                                        iconBg="bg-brand-500/10"
+                                    />
+                                ))}
+                                {traces.length === 0 && (
+                                    <tr>
+                                        <td colSpan="4" className="text-center py-10 text-slate-500">No active interactions found.</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -97,10 +132,17 @@ const AgentMonitoring = () => {
                         <h3 className="font-semibold text-white">Event Stream</h3>
                     </div>
                     <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-                        <LogItem color="bg-emerald-500" time="10:42:05 AM" text={<span>Agent <span className="text-brand-400">AGT-8821</span> retrieved 4 chunks.</span>} />
-                        <LogItem color="bg-blue-500" time="10:41:12 AM" text={<span>User session <span className="text-white">US-442</span> started.</span>} />
-                        <LogItem color="bg-orange-500" time="10:40:55 AM" text={<span>Tool <span className="text-orange-400">CodeInterpreter</span> executed successfully.</span>} />
-                        <LogItem color="bg-emerald-500" time="10:39:20 AM" text={<span>Agent <span className="text-brand-400">AGT-7712</span> connected to DB.</span>} />
+                        {traces.slice(0, 5).map(trace => (
+                            <LogItem
+                                key={trace._id}
+                                color={trace.status === 'grounded' ? "bg-emerald-500" : "bg-orange-500"}
+                                time={new Date(trace.createdAt).toLocaleTimeString()}
+                                text={<span>Agent <span className="text-brand-400">RAG-{trace._id.slice(-4)}</span> {trace.status === 'grounded' ? "retrieved data" : "flagged risk"}.</span>}
+                            />
+                        ))}
+                        {traces.length === 0 && (
+                            <p className="text-xs text-slate-500 text-center mt-10">Monitoring for events...</p>
+                        )}
                     </div>
                 </div>
             </div>
