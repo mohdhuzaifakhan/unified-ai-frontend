@@ -149,10 +149,10 @@ const Ingestion = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
             Ingestion Pipeline
           </h2>
-          <p className="text-slate-400">
+          <p className="text-slate-400 text-sm mt-1 font-medium">
             Configure how documents are processed and indexed.
           </p>
         </div>
@@ -228,8 +228,8 @@ const Ingestion = () => {
                     {sep === " "
                       ? "(space)"
                       : sep === ""
-                      ? "(empty)"
-                      : JSON.stringify(sep).slice(1, -1)}
+                        ? "(empty)"
+                        : JSON.stringify(sep).slice(1, -1)}
                   </span>
                 ))}
               </div>

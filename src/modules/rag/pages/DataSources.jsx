@@ -167,13 +167,14 @@ const DataSources = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
             Connect Your Data
           </h2>
-          <p className="text-slate-400">
+          <p className="text-slate-400 text-sm mt-1 font-medium">
             Upload documents or connect external sources.
           </p>
         </div>
+
         <button
           onClick={fetchData}
           className="px-4 py-2 bg-brand-600 hover:bg-blue-500 bg-blue-600 text-white rounded-lg font-medium shadow-lg shadow-brand-500/20 transition-all flex items-center gap-2"

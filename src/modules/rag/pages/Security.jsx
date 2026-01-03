@@ -14,7 +14,7 @@ const Security = () => {
   const [creating, setCreating] = useState(false);
   const [dKey, setDKey] = useState(null);
 
-  const { projects } = useProject();
+  const { projects, selectedProject } = useProject();
 
   const [formData, setFormData] = useState({
     apiKeyName: "",
@@ -24,14 +24,15 @@ const Security = () => {
   });
 
   useEffect(() => {
-    fetchApiKeys();
-  }, []);
+    if (selectedProject?._id) {
+      fetchApiKeys();
+    }
+  }, [selectedProject?._id]);
 
   const fetchApiKeys = async () => {
     try {
       setLoading(true);
-      const data = await apiKeysApi.getKeys();
-      console.log("DATA:", data);
+      const data = await apiKeysApi.getKeys(selectedProject?._id);
       setKeys(data);
     } finally {
       setLoading(false);
@@ -55,7 +56,6 @@ const Security = () => {
       };
 
       const createdKey = await apiKeysApi.createKey(payload);
-      console.log("KEY:", createdKey)
       setKeys((prev) => [createdKey, ...prev]);
       setIsCreateModalOpen(false);
 
@@ -100,16 +100,14 @@ const Security = () => {
     }
   };
 
-  console.log("KEYS:", keys)
-
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
             API Access & Security
           </h2>
-          <p className="text-slate-400">
+          <p className="text-slate-400 text-sm mt-1 font-medium">
             Manage API keys and access control for your RAG instance.
           </p>
         </div>
@@ -149,7 +147,7 @@ const Security = () => {
                 </td>
 
                 <td className="px-6 py-4 font-mono text-xs text-slate-300">
-                  {key.prefix}
+                  {key.key.slice(0, 8) + "..."}
                 </td>
 
                 <td className="px-6 py-4">{key.projectName}</td>
@@ -161,7 +159,7 @@ const Security = () => {
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-3">
                     <button
-                      onClick={() => copyApiKey(key.prefix)}
+                      onClick={() => copyApiKey(key.key)}
                       className="p-2 rounded-md hover:bg-slate-700 text-slate-400 hover:text-white transition"
                     >
                       <Copy className="w-4 h-4" />

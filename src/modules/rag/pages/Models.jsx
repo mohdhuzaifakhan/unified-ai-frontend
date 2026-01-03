@@ -112,7 +112,7 @@ const ModelConfiguration = () => {
     <div className="space-y-8 animate-fade-in pb-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Intelligence Config</h2>
+          <h2 className="text-2xl font-bold text-white tracking-tight">LLM Model Config</h2>
           <p className="text-slate-400 text-sm mt-1">Select the LLM and parameters for your RAG system.</p>
         </div>
 
@@ -132,8 +132,8 @@ const ModelConfiguration = () => {
             key={model.id}
             onClick={() => setSelectedModel(model.id)}
             className={`p-5 rounded-xl border transition-all cursor-pointer ${selectedModel === model.id
-                ? "bg-slate-800 border-blue-500 shadow-md ring-1 ring-blue-500/50"
-                : "bg-slate-900/50 border-slate-700/50 hover:bg-slate-800/40 hover:border-slate-600"
+              ? "bg-slate-800 border-blue-500 shadow-md ring-1 ring-blue-500/50"
+              : "bg-slate-900/50 border-slate-700/50 hover:bg-slate-800/40 hover:border-slate-600"
               }`}
           >
             <div className="flex items-center justify-between mb-3">

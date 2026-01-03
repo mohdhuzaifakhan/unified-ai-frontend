@@ -4,6 +4,7 @@ export interface ApiKey {
   id: string;
   apiKeyName: string;
   prefix: string;
+  key: string;
   projectId: string;
   projectName: string;
   domains: string[];
@@ -18,8 +19,9 @@ export interface CreateApiKeyPayload {
 }
 
 export const apiKeysApi = {
-  getKeys: async (): Promise<ApiKey[]> => {
-    const res = await client.get('/keys');
+  getKeys: async (projectId?: string): Promise<ApiKey[]> => {
+    const res = await client.get('/keys', { params: { projectId } });
+    console.log("res", res.data)
     return res.data;
   },
 

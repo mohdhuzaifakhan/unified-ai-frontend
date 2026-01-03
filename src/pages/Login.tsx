@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Zap, Mail, Lock, User, AlertCircle } from "lucide-react";
+import { Zap, Mail, Lock, User, AlertCircle, ArrowRight, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function Login() {
       }
       navigate("/rag");
     } catch (err: any) {
-      setError(err.message || "Authentication failed");
+      setError(err.message || "Authentication failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -45,156 +46,192 @@ export default function Login() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError("");
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px]" />
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px]" />
       </div>
+
       <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
-              <Zap className="w-6 h-6 text-white fill-current" />
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 mb-4"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
+              <Zap className="w-7 h-7 text-white fill-white" />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">
-              Unified AI
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-white mb-1">
-            {isLogin ? "Welcome Back" : "Get Started"}
-          </h1>
-          <p className="text-slate-400 text-sm">
-            {isLogin
-              ? "Sign in to your account"
-              : "Join the Unified AI platform"}
-          </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
+              {isLogin ? "Welcome Back" : "Create Account"}
+            </h1>
+            <p className="text-slate-400 text-sm">
+              {isLogin
+                ? "Sign in to access your AI workspace"
+                : "Join the platform and start building"}
+            </p>
+          </motion.div>
         </div>
 
-        <Card className="p-6 glass border-white/10 overflow-hidden">
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-red-200">{error}</div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">
-                    First Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      placeholder="John"
-                      required={!isLogin}
-                    />
-                  </div>
+        <Card className="p-8 bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl overflow-hidden relative">
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="mb-6 bg-red-500/10 border border-red-500/20 rounded-lg overflow-hidden"
+              >
+                <div className="p-3 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-200">{error}</p>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">
-                    Last Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      placeholder="Doe"
-                      required={!isLogin}
-                    />
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             )}
+          </AnimatePresence>
 
-            <div className="space-y-3">
-              <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <AnimatePresence mode="popLayout">
+              {!isLogin && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="grid grid-cols-2 gap-4 overflow-hidden"
+                >
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">
+                      First Name
+                    </label>
+                    <div className="relative group">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                        placeholder="John"
+                        required={!isLogin}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">
+                      Last Name
+                    </label>
+                    <div className="relative group">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                        placeholder="Doe"
+                        required={!isLogin}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <div className="relative group">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                  placeholder="you@example.com"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                  placeholder="name@company.com"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-medium text-slate-400 ml-1">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <div className="flex justify-between items-center px-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Password
+                </label>
+                {isLogin && (
+                  <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                    Forgot password?
+                  </a>
+                )}
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-950/50 border border-slate-800 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
                   placeholder="••••••••"
                   required
                   minLength={8}
                 />
               </div>
-              {isLogin && (
-                <div className="flex justify-end pr-1">
-                  <a
-                    href="#"
-                    className="text-[10px] text-slate-500 hover:text-white transition-colors"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              )}
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow text-white h-11 text-sm font-semibold mt-2"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white h-12 rounded-xl text-sm font-semibold shadow-lg shadow-blue-600/20 border-0 mt-4 transition-all duration-300 hover:scale-[1.02]"
               disabled={loading}
             >
-              {loading
-                ? "Processing..."
-                : isLogin
-                ? "Sign In"
-                : "Create Account"}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Processing...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <span>{isLogin ? "Sign In" : "Create Account"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              )}
             </Button>
           </form>
 
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError("");
-              }}
-              className="text-xs text-slate-400 hover:text-primary transition-colors duration-200"
-            >
-              {isLogin
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Sign in"}
-            </button>
+          <div className="mt-6 pt-6 border-t border-white/5 text-center">
+            <p className="text-slate-400 text-sm">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}
+              <button
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setError("");
+                }}
+                className="ml-2 text-blue-400 hover:text-blue-300 font-medium transition-colors focus:outline-none hover:underline underline-offset-4"
+              >
+                {isLogin ? "Sign up" : "Sign in"}
+              </button>
+            </p>
           </div>
         </Card>
+
+        <div className="text-center mt-6 text-slate-600 text-xs">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
+        </div>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { dashboardApi } from "@/services/api";
+import { dashboardApi, dataIngestionApi } from "@/services/api";
 import ProjectDropdown from "../components/ProjectDropdown";
 
 const Dashboard = () => {
@@ -45,7 +45,7 @@ const Dashboard = () => {
         } else {
           const [statsRes, runs, healthRes] = await Promise.all([
             dashboardApi.getRagStats(projectId),
-            dashboardApi.getEmbeddingExperiments(projectId),
+            dataIngestionApi.getAllEmbeddingsWithMetadataOfProject(projectId),
             dashboardApi.getRagHealth(projectId),
           ]);
 
@@ -90,13 +90,6 @@ const Dashboard = () => {
             projectId={projectId}
             setProjectId={setProjectId}
           />
-          <button
-            onClick={() => navigate("/rag/sources")}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-500 transition-all active:scale-95 shadow-lg"
-          >
-            <Plus className="w-4 h-4" />
-            Add Source
-          </button>
         </div>
       </div>
 
@@ -166,7 +159,7 @@ const Dashboard = () => {
           <div className="p-6 border-b border-slate-800 flex justify-between items-center">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Boxes size={18} className="text-cyan-500" />
-              Pipeline Architecture
+              Embedding Indices
             </h3>
           </div>
 
@@ -184,11 +177,11 @@ const Dashboard = () => {
               <tbody className="divide-y divide-slate-800/50">
                 {experiments.map((e) => (
                   <tr key={e.id} className="hover:bg-slate-800/30 transition-all">
-                    <td className="px-6 py-4 text-white font-medium">{e.embeddingModel}</td>
-                    <td className="px-6 py-4 text-slate-400">{e.datasource}</td>
+                    <td className="px-6 py-4 text-white font-medium">{e.embedding_model}</td>
+                    <td className="px-6 py-4 text-slate-400">{e.datasourceId.name}</td>
                     <td className="px-6 py-4">
                       <span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700 text-slate-300">
-                        {e.vectorStore}
+                        {e.vector_store}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-slate-400">{e.chunksStored}</td>

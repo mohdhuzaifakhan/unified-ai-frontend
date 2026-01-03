@@ -87,8 +87,10 @@ export default function RAGProjectsPage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">RAG Projects</h1>
-          <p className="text-slate-400">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            RAG Projects
+          </h2>
+          <p className="text-slate-400 text-sm mt-1 font-medium">
             Manage your knowledge bases and AI agents.
           </p>
         </div>
