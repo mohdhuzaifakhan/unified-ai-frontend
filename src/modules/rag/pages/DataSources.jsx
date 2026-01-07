@@ -18,7 +18,7 @@ import { useProject } from "../context/ProjectContext";
 const DataSources = () => {
   const { selectedProject } = useProject();
   const [searchParams] = useSearchParams();
-  const projectId = selectedProject._id;
+  const projectId = selectedProject?._id;
   const [activeTab, setActiveTab] = useState("files");
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +88,7 @@ const DataSources = () => {
     setSources((prev) => [tempSource, ...prev]);
 
     try {
-      const newSource = await dataSourcesApi.uploadFile(file, projectId);
+      const newSource = await dataSourcesApi.uploadFileToS3(file, projectId);
       setSources((prev) => prev.map((s) => (s._id === tempId ? newSource : s)));
     } catch (err) {
       console.error("Upload failed:", err);
@@ -264,8 +264,8 @@ const DataSources = () => {
                           <span className="text-slate-200">{doc.name}</span>
                         </td>
                         <td className="px-6 py-4">
-                          {doc.fileSize
-                            ? (doc.fileSize / 1024).toFixed(1) + " KB"
+                          {doc.config
+                            ? (doc?.config?.size / 1024).toFixed(1) + " KB"
                             : "--"}
                         </td>
                         <td className="px-6 py-4">
