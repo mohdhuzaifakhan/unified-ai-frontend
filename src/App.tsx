@@ -7,6 +7,9 @@ import { RAGRoutes } from "@/modules/rag/routes";
 import { AgentsRoutes } from "@/modules/agents/routes";
 import Docs from "./pages/Docs";
 import { Toaster } from "react-hot-toast";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import PricingPage from "./pages/PricingPage";
 
 export default function App() {
   return (
@@ -20,6 +23,9 @@ export default function App() {
           <Route path="/rag/*" element={<RAGRoutes />} />
           <Route path="/agents/*" element={<AgentsRoutes />} />
           <Route path="/docs" element={<Docs />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

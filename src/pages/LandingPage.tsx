@@ -1,322 +1,245 @@
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Zap,
   Shield,
-  BarChart,
   Cpu,
   Globe,
-  Users,
   Play,
-  Bot,
-  Layers,
-  User,
-  Database,
-  Workflow,
-  LogIn,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { services } from "@/static/app-content/service-metadata";
+import Navbar from "@/components/ui/navbar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { colors, fontSizes, borders } from "@/static/app-content/colors";
+import ShadowContainer from "@/components/ui/shadow-container";
+import NewReleaseUpdateBadge from "@/components/ui/new-release-update-badge";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const services = [
-    {
-      id: "ml",
-      name: "ML as a Service",
-      description:
-        "AutoML platform for building and deploying machine learning models in minutes",
-      icon: Bot,
-      path: "/ml",
-      gradient: "from-blue-500 to-cyan-500",
-      features: [
-        "Auto-Feature Engineering",
-        "Model Selection",
-        "One-Click Deploy",
-      ],
-    },
-    {
-      id: "rag",
-      name: "RAG as a Service",
-      description:
-        "Retrieval Augmented Generation for intelligent document processing and chat",
-      icon: Layers,
-      path: "/rag",
-      gradient: "from-purple-500 to-pink-500",
-      features: [
-        "Document Ingestion",
-        "Vector Search",
-        "Multi-Agent Workflows",
-      ],
-    },
-    {
-      id: "agents",
-      name: "Agent as a Service",
-      description:
-        "Autonomous AI agents for workflow automation and orchestration",
-      icon: User,
-      // path: "/agents",
-      path: "#",
-      gradient: "from-green-500 to-emerald-500",
-      features: ["Agent Orchestration", "Task Automation", "Coming Soon"],
-    },
-  ];
-
   const handleNavigate = (path: string) => {
-    if (isAuthenticated) {
-      navigate(path);
-    } else {
-      navigate("/login");
-    }
+    if (isAuthenticated) navigate(path);
+    else navigate("/login");
   };
   return (
-    <div className="min-h-screen bg-background text-slate-200 font-sans overflow-x-hidden">
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-glass-surface/50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white fill-current" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              Unified AI
+    <div className={`min-h-screen ${colors.backgroundColor} overflow-x-hidden`}>
+      <Navbar />
+      <section className="relative py-28 lg:py-36 overflow-hidden">
+        <ShadowContainer />
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 max-w-4xl mx-auto px-6 text-center"
+        >
+          <NewReleaseUpdateBadge label="RAG Service is Live" />
+          <h1
+            className={`${fontSizes.headerTextClass} font-bold text-white mb-6 tracking-tight leading-[1.1]`}
+          >
+            One Unified <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
+              AI Services Ecosystem
             </span>
-          </div>
+          </h1>
 
-          <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-            {["Services", "Features", "Pricing"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="hover:text-white transition-colors"
-              >
-                {item}
-              </a>
-            ))}
-            <button
-              onClick={() => navigate("/docs")}
-              className="hover:text-white transition-colors"
-            >
-              Docs
-            </button>
-          </div>
+          <p
+            className={`text-sm ${colors.textColorClass} mb-10 max-w-2xl mx-auto leading-relaxed`}
+          >
+            From **RAG** and **AutoML** to **Autonomous Agents**. Deploy
+            professional-grade AI services on a single, secured,
+            enterprise-ready infrastructure.
+          </p>
 
-          <div className="flex items-center gap-4">
+          <div className="flex justify-center items-center gap-4">
             <Button
-              variant="ghost"
-              onClick={() => navigate("/login")}
-              className="gap-2"
-            >
-              <LogIn className="w-4 h-4" />
-              Log in
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-primary to-secondary hover:shadow-glow text-white"
+              size="sm"
+              className={colors.buttonColorClass}
               onClick={() => handleNavigate("/rag")}
             >
-              Get Started
+              Launch RAG <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="px-4 border-white/10 hover:bg-white/5"
+            >
+              <Play className="mr-2 w-4 h-4 fill-current" /> View Demo
             </Button>
           </div>
-        </div>
-      </nav>
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse-glow" />
-          <div
-            className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[100px] animate-pulse-glow"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs font-semibold mb-6">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Unified AI v1.0 is now live
-            </div>
-
-            <h1 className="text-5xl lg:text-7xl font-display font-bold leading-tight text-white mb-6">
-              Your Complete AI <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
-                Services Platform
-              </span>
-            </h1>
-
-            <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              From AutoML to RAG to Autonomous Agents - deploy production-grade
-              AI services in minutes. No Ph.D. required.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button
-                size="lg"
-                className="text-base px-8 h-12 bg-blue-600 hover:bg-blue-500 text-white transition-all border-none"
-                onClick={() => handleNavigate("/rag")}
-              >
-                Start Building Free
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-base px-8 h-12 border-slate-700 hover:bg-white/5"
-              >
-                <Play className="mr-2 w-4 h-4" />
-                Watch Demo
-              </Button>
-            </div>
-
-            {/* Do not remove this section at any cost */}
-            {/* <div className="flex items-center justify-center gap-6 text-sm text-slate-500">
-                            <div className="flex -space-x-2">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-slate-800 flex items-center justify-center text-xs font-bold text-white">
-                                        {String.fromCharCode(64 + i)}
-                                    </div>
-                                ))}
-                            </div>
-                            <p>Trusted by 10,000+ teams worldwide</p>
-                        </div> */}
-          </motion.div>
-        </div>
+        </motion.div>
       </section>
 
-      <section id="services" className="py-24 bg-surface/30">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
-              Choose Your <span className="text-primary">AI Service</span>
-            </h2>
-            <p className="text-slate-400 text-lg">
-              Select the service that fits your needs. Each platform is fully
-              integrated and ready to deploy.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
+      <section id="services" className={`py-10 relative`}>
+        <ShadowContainer />
+        <div className="max-w-[85rem] mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
             {services.map((service) => (
               <motion.div
                 key={service.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => handleNavigate(service.path)}
-                className="group cursor-pointer"
+                whileHover={service.status === "active" ? { scale: 1.02 } : {}}
+                onClick={() =>
+                  service.status === "active" && handleNavigate(service.path!)
+                }
+                className={`relative flex flex-col p-5 ${
+                  borders.borderRadiusClass
+                } border transition-all duration-300 ${
+                  service.status === "active"
+                    ? "bg-gradient-to-br from-primary/10 via-transparent to-primary/5 border-primary/40 shadow-lg shadow-primary/5 cursor-pointer ring-1 ring-primary/20"
+                    : "bg-white/[0.02] border-white/5 opacity-50 cursor-not-allowed"
+                }`}
               >
-                <div className="h-full p-8 rounded-2xl border border-white/10 bg-glass-surface/50 backdrop-blur-sm hover:bg-glass-surface/80 transition-all duration-300">
+                <div className="flex justify-between items-center mb-4">
                   <div
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 group-hover:shadow-glow transition-shadow`}
+                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-lg shadow-black/20`}
                   >
-                    <service.icon className="w-8 h-8 text-white" />
+                    {service.status === "active" ? (
+                      <service.icon className="w-5 h-5 text-white" />
+                    ) : (
+                      <Lock className="w-4 h-4 text-white/40" />
+                    )}
                   </div>
+                  {service.status === "coming-soon" && (
+                    <span className="text-[9px] font-bold text-slate-500 bg-white/5 border-1 border-white/5 px-2 py-0.5 rounded-md uppercase">
+                      Soon
+                    </span>
+                  )}
+                </div>
 
-                  <h3 className="text-2xl font-display font-bold mb-3 text-white">
+                <div className="flex-grow">
+                  <h3
+                    className={`text-base font-bold mb-1.5 tracking-tight ${
+                      service.status === "active"
+                        ? "text-white"
+                        : "text-slate-400"
+                    }`}
+                  >
                     {service.name}
                   </h3>
-
-                  <p className="text-slate-400 mb-6 leading-relaxed">
+                  <p className="text-slate-400 text-[12px] leading-snug mb-4 line-clamp-2">
                     {service.description}
                   </p>
 
-                  <ul className="space-y-2 mb-6">
-                    {service.features.map((feature, idx) => (
+                  <ul className="space-y-1.5 mb-4">
+                    {service.features.map((f, i) => (
                       <li
-                        key={idx}
-                        className="flex items-center gap-2 text-sm text-slate-300"
+                        key={i}
+                        className="flex items-center gap-2 text-[11px] font-medium"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        {feature}
+                        <CheckCircle2
+                          className={`w-3.5 h-3.5 ${
+                            service.status === "active"
+                              ? "text-primary"
+                              : "text-slate-700"
+                          }`}
+                        />
+                        <span
+                          className={
+                            service.status === "active"
+                              ? "text-slate-200"
+                              : "text-slate-500"
+                          }
+                        >
+                          {f}
+                        </span>
                       </li>
                     ))}
                   </ul>
-
-                  <div className="flex items-center gap-2 text-primary font-medium group-hover:gap-3 transition-all">
-                    Explore Service
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
                 </div>
+                {service.status === "active" && (
+                  <div className="pt-3 border-t border-white/5 flex items-center justify-between group/btn">
+                    <span className="text-[11px] font-bold text-primary">
+                      Enter Dashboard
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 text-primary group-hover/btn:translate-x-1 transition-transform" />
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="features" className="py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">
-              Everything you need to <br />
-              <span className="text-primary">deploy AI at scale</span>
+      <section id="features" className="py-20 border-t border-white/5">
+       <ShadowContainer />
+        <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-6">
+              Production-Grade{" "}
+              <span className="text-primary">RAG Infrastructure</span>
             </h2>
-            <p className="text-slate-400 text-lg">
-              From data ingestion to model monitoring, we handle the heavy
-              lifting so you can focus on business value.
-            </p>
+            <div className="grid gap-3">
+              {[
+                {
+                  icon: Cpu,
+                  title: "Vector Engine",
+                  desc: "High-speed semantic search across millions of data points.",
+                },
+                {
+                  icon: Globe,
+                  title: "Data Connectors",
+                  desc: "Seamless ingestion from PDFs, APIs, and cloud storage.",
+                },
+                {
+                  icon: Shield,
+                  title: "Privacy-First",
+                  desc: "Enterprise-grade encryption for proprietary knowledge.",
+                },
+              ].map((f, i) => (
+                <div
+                  key={i}
+                  className={`flex gap-4 p-4 ${borders.borderRadiusClass} bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors`}
+                >
+                  <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <f.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white mb-0.5">
+                      {f.title}
+                    </h4>
+                    <p className="text-slate-400 text-[12px] leading-relaxed">
+                      {f.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: BarChart,
-                title: "Auto-Feature Engineering",
-                desc: "Automatically detect types, handle missing values, and generate high-impact features.",
-              },
-              {
-                icon: Cpu,
-                title: "Model Selection",
-                desc: "Intelligently tests XGBoost, CatBoost, Neural Nets, and Ensembles to find the winner.",
-              },
-              {
-                icon: Globe,
-                title: "One-Click Deploy",
-                desc: "Instant REST API endpoints for your models. Auto-scaling included.",
-              },
-              {
-                icon: Shield,
-                title: "Enterprise Security",
-                desc: "SOC2 Type II compliant. Role-based access control and encrypted artifacts.",
-              },
-              // {
-              //     icon: Users,
-              //     title: "Collaboration",
-              //     desc: "Shared workspaces, experiments, and model registry for your entire team."
-              // },
-              {
-                icon: Zap,
-                title: "Real-time Inference",
-                desc: "Low-latency predictions running on optimized edge infrastructure.",
-              },
-            ].map((feature, i) => (
-              <div
-                key={i}
-                className="group p-8 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
+          <div
+            className={`bg-slate-900/60 ${borders.borderRadiusClass} p-1 border border-white/10 shadow-2xl`}
+          >
+            <div className="bg-black/40 rounded-[14px] p-5 font-mono text-[11px] leading-relaxed">
+              <div className="flex gap-1.5 mb-5 border-b border-white/5 pb-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/40" />
               </div>
-            ))}
+              <p className="text-primary">
+                $ unified-ai ingest --source ./legal-docs/
+              </p>
+              <p className="text-green-400">
+                ✓ Ingestion complete: 1,420 chunks vectorized.
+              </p>
+              <p className="text-slate-500 mt-4 italic font-sans">
+                // Querying Knowledge Base...
+              </p>
+              <p className="text-white mt-2 font-sans">
+                “Based on the contract on page 4, the termination notice period
+                is 30 days.”
+              </p>
+            </div>
           </div>
         </div>
       </section>
-      <footer className="py-12 border-t border-white/5 bg-background">
-        <div className="max-w-7xl mx-auto px-6 text-center text-slate-500 text-sm">
-          <p>© 2025 Unified AI Platform. All rights reserved.</p>
-        </div>
+
+      <footer className="py-10 text-center border-t border-white/5">
+        <p className="text-slate-500 text-[11px] font-medium tracking-[0.2em] uppercase">
+          © 2026 Unified AI Platform • The complete service ecosystem
+        </p>
       </footer>
     </div>
   );
