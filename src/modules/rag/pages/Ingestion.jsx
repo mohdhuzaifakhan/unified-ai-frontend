@@ -228,8 +228,8 @@ const Ingestion = () => {
                     {sep === " "
                       ? "(space)"
                       : sep === ""
-                        ? "(empty)"
-                        : JSON.stringify(sep).slice(1, -1)}
+                      ? "(empty)"
+                      : JSON.stringify(sep).slice(1, -1)}
                   </span>
                 ))}
               </div>
@@ -289,6 +289,7 @@ const Ingestion = () => {
                   className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white outline-none"
                 >
                   <option value="mongodb">MongoDB Vector Store</option>
+                  <option value="milvus">Milvus Scalable Vector Store</option>
                   {/* <option value="pinecone">Pinecone</option>
                   <option value="faiss">FAISS (Local, Facebook AI)</option>
                   <option value="milvus">

@@ -28,7 +28,7 @@ export default function LandingPage() {
   return (
     <div className={`min-h-screen ${colors.backgroundColor} overflow-x-hidden`}>
       <Navbar />
-      <section className="relative py-28 lg:py-36 overflow-hidden">
+      <section className="relative py-42 lg:pt-48 overflow-hidden">
         <ShadowContainer />
         <motion.div
           initial={{ opacity: 0, y: 15 }}
